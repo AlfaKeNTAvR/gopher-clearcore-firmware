@@ -2,7 +2,8 @@
 
 #include <Arduino.h>
 #include "ClearCore.h"
-
+#define ARDUINOJSON_ENABLE_PROGMEM 0
+#include <ArduinoJson.h>
 // Options are: ConnectorM0, ConnectorM1, ConnectorM2, or ConnectorM3.
 #define motor ConnectorM0
 
@@ -85,3 +86,11 @@ void lowerEndstopInterrupt();
 
 // UPPER ENDSTOP INTERRUPT HANDLER
 void upperEndstopInterrupt();
+////////////////////////////////////////////////////////////////////////////
+//                                                                        //
+//                       DIAGNOSTICS FUNCTIONS                            //
+//                                                                        //
+////////////////////////////////////////////////////////////////////////////
+
+// DRIVE STATUS DATA FUNCTION
+String driveStatus(String command = "all");
