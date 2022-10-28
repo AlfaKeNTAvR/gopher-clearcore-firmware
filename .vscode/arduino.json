@@ -1,0 +1,5 @@
+{
+    "sketch": "gopher-clearcore-firmware.ino",
+    "board": "ClearCore:sam:clearcore",
+    "port": "COM3"
+}

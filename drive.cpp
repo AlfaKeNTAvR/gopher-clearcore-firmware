@@ -1,6 +1,7 @@
 #include "drive.h"
 
 // Variables
+bool debug = false;
 volatile bool manual_brake_disable = false;
 bool isHomed = false;
 String mode = "none";
@@ -69,7 +70,7 @@ bool safetyCheck(bool ignore_ishomed)
   }
 
   // Check 3: the motor is homed
-  if(!isHomed && !ignore_ishomed)
+  if(!isHomed && !ignore_ishomed && !debug)
   {
     Serial.println("Error: Not homed!");
     return false;
@@ -300,7 +301,7 @@ bool homing(double pos_after_homing)
   motor.MoveVelocity(0);
  
   // Get below the limit switch
-  moveRelativePosition(-5, 0.1, true, true);
+  moveRelativePosition(-7, 0.1, true, true);
 
   // Wait for the movement to complete
   motionWait();
@@ -327,7 +328,7 @@ bool homing(double pos_after_homing)
   }
 
   // Stop continous movement
- motor.MoveVelocity(0);
+  motor.MoveVelocity(0);
 
   // Get below the limit switch
   moveRelativePosition(-10, 0.1, true, true);
@@ -366,7 +367,7 @@ bool moveAbsolutePosition(int position, double vel_frac, bool ignore_limits, boo
   vel_frac = CorrectVelocityFraction(vel_frac); 
   
   // Check 6: soft limits will not be exceeded
-  if(!ignore_limits)
+  if(!ignore_limits && !debug)
   {
     if(position > positionUpperLimit || position < positionLowerLimit)
     {
@@ -405,7 +406,7 @@ bool moveRelativePosition(int position, double vel_frac, bool ignore_limits, boo
   vel_frac = CorrectVelocityFraction(vel_frac); 
   
   // Check 6: soft limits will not be exceeded
-  if(!ignore_limits)
+  if(!ignore_limits && !debug)
   {
     double current_position = unitConverter(motor.PositionRefCommanded(), "steps_to_mm");
 
@@ -450,7 +451,7 @@ bool moveAtVelocity(double vel_frac, bool ignore_limits, bool ignore_ishomed)
   // Serial.println(" mm");
 
   // Check 6: soft limits will not be exceeded
-  if(!ignore_limits)
+  if(!ignore_limits && !debug)
   {
     if((getPosition() - positionLowerLimit <= 5 && vel_frac < 0) || (positionUpperLimit - getPosition() <= 5 && vel_frac > 0))
     {
@@ -487,11 +488,12 @@ void lowerEndstopInterrupt()
 {
   // Safely decelerate the motor
   motor.MoveStopDecel(accelerationLimit);
+  Serial.println("Lower endstop reached!");
 
   // Ignore during homing
-  if(isHomed)
+  if(isHomed && !debug)
   { 
-    Serial.println("Lower endstop reached!");
+    Serial.println("Retracting to a safe position!"); 
     moveAbsolutePosition(positionLowerLimit, 0.5, true, false);
   }
 }
@@ -502,11 +504,12 @@ void upperEndstopInterrupt()
 {
   // Safely decelerate the motor
   motor.MoveStopDecel(accelerationLimit);
+  Serial.println("Upper endstop reached!");
 
   // Ignore during homing
-  if(isHomed)
+  if(isHomed && !debug)
   { 
-    Serial.println("Upper endstop reached!");
+    Serial.println("Retracting to a safe position!"); 
     moveAbsolutePosition(positionUpperLimit, 0.5, true, false);
   }
 }
