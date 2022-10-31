@@ -100,6 +100,15 @@ void loop()
       brakeControl("off", true);
     }
 
+    // Debug mode
+    else if(command == "debug")
+    {
+      String sub_command = Serial.readStringUntil('_');
+
+      if(sub_command == "on") debugMode("on");
+      else if(sub_command == "off") debugMode("off");
+    }
+
     // Get position (mm)
     else if(command == "gp")
     {

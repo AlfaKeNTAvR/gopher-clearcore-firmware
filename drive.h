@@ -48,6 +48,9 @@ bool drivePower(String state, bool ignore_hlfb=false);
 // AUTO BRAKE TURN-ON (while the drive is not moving)
 void moveCompleted();
 
+// DEBUG MODE
+void debugMode(bool mode);
+
 // GET CURRENT POSITION
 double getPosition();
 
