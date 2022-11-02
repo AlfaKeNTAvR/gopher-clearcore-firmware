@@ -26,10 +26,7 @@ void setup()
         continue;
     }
 
-    //brakeControl("on");
-    
     driveSetup();
-
 }
 
 void loop() 
@@ -105,8 +102,8 @@ void loop()
     {
       String sub_command = Serial.readStringUntil('_');
 
-      if(sub_command == "on") debugMode("on");
-      else if(sub_command == "off") debugMode("off");
+      if(sub_command == "on") debugMode(true);
+      else if(sub_command == "off") debugMode(false);
     }
 
     // Get position (mm)

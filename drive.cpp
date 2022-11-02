@@ -4,7 +4,7 @@
 bool debug = false;
 volatile bool manual_brake_disable = false;
 bool isHomed = false;
-String mode = "none";
+String mode = "stall";
 
 uint32_t previousMillisCompleted = 0;
 uint32_t currentMillisCompleted = 0;
@@ -160,7 +160,7 @@ void brakeControl(String state, bool manual)
     digitalWrite(brakePin, LOW);  
     delay(50); // To ensure the brake is ON
 
-    if(debug) Serial.println("Brake Enabled Sasi");
+    if(debug) Serial.println("Brake Enabled");
   }
 
   // Turn on the brake
@@ -240,15 +240,20 @@ void moveCompleted()
   // If motor is not moving and brake is not turned-off manually
   if(motor.StepsComplete() && manual_brake_disable == false)
   {
-    if(mode != "none")
+    if(mode == "moving")
     {
       if(debug) Serial.println("Movement complete!");
 
       previousMillisCompleted = millis();
-      mode = "none";
+      mode = "braking";
     }
 
-    if(millis() - previousMillisCompleted >= delayCompleted) brakeControl("on"); 
+    if(mode == "braking" && millis() - previousMillisCompleted >= delayCompleted) 
+    {
+      brakeControl("on");
+      mode = "stall";
+    }
+     
   }
 }
 
@@ -408,7 +413,7 @@ bool moveAbsolutePosition(int position, double vel_frac, bool ignore_limits, boo
   motor.Move(position, MotorDriver::MOVE_TARGET_ABSOLUTE);
 
   // Change the mode
-  mode = "abs";
+  mode = "moving";
 
   return true;
 }
@@ -449,7 +454,7 @@ bool moveRelativePosition(int position, double vel_frac, bool ignore_limits, boo
   motor.Move(position, MotorDriver::MOVE_TARGET_REL_END_POSN);
 
   // Change the mode
-  mode = "rel";
+  mode = "moving";
 
   return true;
 }
@@ -489,7 +494,7 @@ bool moveAtVelocity(double vel_frac, bool ignore_limits, bool ignore_ishomed)
   motor.MoveVelocity(velocity);
 
   // Change the mode
-  mode = "vel";
+  mode = "moving";
 
   return true; 
 }
