@@ -93,4 +93,4 @@ void upperEndstopInterrupt();
 ////////////////////////////////////////////////////////////////////////////
 
 // DRIVE STATUS DATA FUNCTION
-String driveStatus(String command = "all");
+bool driveStatus(void *);

@@ -512,7 +512,7 @@ void upperEndstopInterrupt()
 }
 ////////////////////////////////////////////////////////////////////////////
 // DRIVE STATUS DATA
-String driveStatus(String command){
+bool driveStatus(void *){
 
     DynamicJsonDocument doc(1024);
     JsonObject status  = doc.to<JsonObject>();
@@ -530,28 +530,28 @@ String driveStatus(String command){
     Limits["LowerLimitReached"] = !digitalRead(lowerEndstopPin);
     String output = "";
     
-    if (command == "bd"){
-      serializeJsonPretty(Brake,output);
-    }
+    // if (command == "bd"){
+    //   serializeJsonPretty(Brake,output);
+    // }
 
    
-    else if (command =="mtr"){
-    serializeJsonPretty(Motor,output);
-    }
+    // else if (command =="mtr"){
+    // serializeJsonPretty(Motor,output);
+    // }
         
    
-    else if(command == "end"){
-      serializeJsonPretty(Limits,output);
-    }
+    // else if(command == "end"){
+    //   serializeJsonPretty(Limits,output);
+    // }
         
+    serializeJson(status,output);
+    Serial.print(output);
+
+    return true;
+
    
-          
-    else if(command == "all"){
-      serializeJsonPretty(status,output);
-    }
    
 
-    return output;
 
 
 
