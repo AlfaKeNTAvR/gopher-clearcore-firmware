@@ -520,7 +520,13 @@ void lowerEndstopInterrupt()
   { 
     if(debug) Serial.println("Retracting to a safe position!"); 
 
-    else moveAbsolutePosition(positionLowerLimit, 0.5, true, false);
+    else 
+    {
+      moveAbsolutePosition(positionLowerLimit, 0.5, true, false);
+
+      // Wait for the movement to complete
+      motionWait();
+    }
   }
 }
 
@@ -538,6 +544,12 @@ void upperEndstopInterrupt()
   { 
     if(debug) Serial.println("Retracting to a safe position!"); 
 
-    else moveAbsolutePosition(positionUpperLimit, 0.5, true, false);
+    else 
+    {
+      moveAbsolutePosition(positionUpperLimit, 0.5, true, false);
+    
+      // Wait for the movement to complete
+      motionWait();
+    }
   }
 }
