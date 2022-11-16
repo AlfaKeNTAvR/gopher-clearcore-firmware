@@ -6,6 +6,8 @@
 // Options are: ConnectorM0, ConnectorM1, ConnectorM2, or ConnectorM3.
 #define motor ConnectorM0
 
+// 
+
 // Specify which input pin to read from.
 // IO-0 through A-12 are all available as digital inputs.
 #define upperEndstopPin DI7
@@ -47,6 +49,9 @@ bool drivePower(String state, bool ignore_hlfb=false);
 
 // AUTO BRAKE TURN-ON (while the drive is not moving)
 void moveCompleted();
+
+// DEBUG MODE
+void debugMode(bool mode);
 
 // GET CURRENT POSITION
 double getPosition();

@@ -4,7 +4,7 @@
 bool debug = false;
 volatile bool manual_brake_disable = false;
 bool isHomed = false;
-String mode = "none";
+String mode = "stall";
 
 uint32_t previousMillisCompleted = 0;
 uint32_t currentMillisCompleted = 0;
@@ -111,6 +111,7 @@ bool driveSetup()
 
   // Set the motor's HLFB mode
   motor.HlfbMode(MotorDriver::HLFB_MODE_STATIC);
+
   // Set the HFLB carrier frequency to 482 Hz
   //motor.HlfbCarrier(MotorDriver::HLFB_CARRIER_482_HZ);
 
@@ -158,7 +159,8 @@ void brakeControl(String state, bool manual)
 
     digitalWrite(brakePin, LOW);  
     delay(50); // To ensure the brake is ON
-    //Serial.println("Brake Enabled");
+
+    if(debug) Serial.println("Brake Enabled");
   }
 
   // Turn on the brake
@@ -168,7 +170,8 @@ void brakeControl(String state, bool manual)
 
     digitalWrite(brakePin, HIGH);
     delay(50);  // To ensure the brake is OFF
-    //Serial.println("Brake Disabled"); 
+
+    if(debug) Serial.println("Brake Disabled"); 
   }
     
 }
@@ -186,6 +189,9 @@ bool drivePower(String state, bool ignore_hlfb)
   {
     // Enables the motor
     motor.EnableRequest(true);
+
+    // To ensure the motor turns on
+    delay(100);  
   
     // Check if the motor was actually enabled
     if(!motor.EnableRequest())
@@ -194,7 +200,7 @@ bool drivePower(String state, bool ignore_hlfb)
       return false;
     }
     
-    Serial.println("Drive Enabled");
+    if(debug) Serial.println("Drive Enabled");
   }
 
   // Disable the motor
@@ -202,6 +208,9 @@ bool drivePower(String state, bool ignore_hlfb)
   {
     // Disables the motor
     motor.EnableRequest(false);
+
+    // To ensure the motor turns off
+    delay(100);  
   
     // Check if the motor was actually enabled
     if(motor.EnableRequest())
@@ -210,7 +219,7 @@ bool drivePower(String state, bool ignore_hlfb)
       return false;
     }
   
-    Serial.println("Drive Disabled");    
+    if(debug) Serial.println("Drive Disabled");    
   }
 
   // Check if the motor is not in fail state (ignore on start up - motor take time to energize its coils)
@@ -231,15 +240,30 @@ void moveCompleted()
   // If motor is not moving and brake is not turned-off manually
   if(motor.StepsComplete() && manual_brake_disable == false)
   {
-    if(mode != "none")
+    if(mode == "moving")
     {
-      Serial.println("Movement complete!");
+      if(debug) Serial.println("Movement complete!");
+
       previousMillisCompleted = millis();
-      mode = "none";
+      mode = "braking";
     }
 
-    if(millis() - previousMillisCompleted >= delayCompleted) brakeControl("on"); 
+    if(mode == "braking" && millis() - previousMillisCompleted >= delayCompleted) 
+    {
+      brakeControl("on");
+      mode = "stall";
+    }
+     
   }
+}
+
+
+////////////////////////////////////////////////////////////////////////////
+// DEBUG MODE
+void debugMode(bool mode)
+{
+  if(mode) debug = true;
+  else debug = false;
 }
 
 
@@ -272,7 +296,7 @@ bool homing(double pos_after_homing)
   // Turn off the brake
   brakeControl("off");
 
-  Serial.println("Rapid homing...");
+  if(debug) Serial.println("Rapid homing...");
 
   // RAPID continuos movement towards lower limit switch
   //moveAtVelocity(0.1, true, true);
@@ -306,7 +330,7 @@ bool homing(double pos_after_homing)
   // Wait for the movement to complete
   motionWait();
 
-  Serial.println("Precise homing...");
+  if(debug) Serial.println("Precise homing...");
   
   // SLOW continuos movement towards lower limit switch
   motor.MoveVelocity(240);
@@ -321,7 +345,7 @@ bool homing(double pos_after_homing)
     if(current_millis - previous_millis >= slow_delay)
     {
       motor.MoveVelocity(0);
-      Serial.println("Error: Slow homing timeout!");
+      Serial.println("Error: Precise homing timeout!");
       
       return false;
     }
@@ -389,7 +413,7 @@ bool moveAbsolutePosition(int position, double vel_frac, bool ignore_limits, boo
   motor.Move(position, MotorDriver::MOVE_TARGET_ABSOLUTE);
 
   // Change the mode
-  mode = "abs";
+  mode = "moving";
 
   return true;
 }
@@ -430,7 +454,7 @@ bool moveRelativePosition(int position, double vel_frac, bool ignore_limits, boo
   motor.Move(position, MotorDriver::MOVE_TARGET_REL_END_POSN);
 
   // Change the mode
-  mode = "rel";
+  mode = "moving";
 
   return true;
 }
@@ -470,7 +494,7 @@ bool moveAtVelocity(double vel_frac, bool ignore_limits, bool ignore_ishomed)
   motor.MoveVelocity(velocity);
 
   // Change the mode
-  mode = "vel";
+  mode = "moving";
 
   return true; 
 }
@@ -488,13 +512,21 @@ void lowerEndstopInterrupt()
 {
   // Safely decelerate the motor
   motor.MoveStopDecel(accelerationLimit);
-  Serial.println("Lower endstop reached!");
+  
+  if(debug) Serial.println("Lower endstop reached!");
 
   // Ignore during homing
-  if(isHomed && !debug)
+  if(isHomed)
   { 
-    Serial.println("Retracting to a safe position!"); 
-    moveAbsolutePosition(positionLowerLimit, 0.5, true, false);
+    if(debug) Serial.println("Retracting to a safe position!"); 
+
+    else 
+    {
+      moveAbsolutePosition(positionLowerLimit, 0.5, true, false);
+
+      // Wait for the movement to complete
+      motionWait();
+    }
   }
 }
 
@@ -504,12 +536,20 @@ void upperEndstopInterrupt()
 {
   // Safely decelerate the motor
   motor.MoveStopDecel(accelerationLimit);
-  Serial.println("Upper endstop reached!");
+
+  if(debug) Serial.println("Upper endstop reached!");
 
   // Ignore during homing
-  if(isHomed && !debug)
+  if(isHomed)
   { 
-    Serial.println("Retracting to a safe position!"); 
-    moveAbsolutePosition(positionUpperLimit, 0.5, true, false);
+    if(debug) Serial.println("Retracting to a safe position!"); 
+
+    else 
+    {
+      moveAbsolutePosition(positionUpperLimit, 0.5, true, false);
+    
+      // Wait for the movement to complete
+      motionWait();
+    }
   }
 }
