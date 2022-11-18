@@ -28,7 +28,7 @@ void setup()
     }
 
     //brakeControl("on");
-    timer.every(1000, driveStatus);
+    timer.every(10, driveStatus);
     driveSetup();
 
 
