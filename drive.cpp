@@ -5,7 +5,7 @@ bool debug = false;
 volatile bool manual_brake_disable = false;
 bool isHomed = false;
 String mode = "stall";
-
+volatile bool brakeOn = false;
 uint32_t previousMillisCompleted = 0;
 uint32_t currentMillisCompleted = 0;
 uint32_t delayCompleted = 1000;
@@ -552,4 +552,50 @@ void upperEndstopInterrupt()
       motionWait();
     }
   }
+}
+////////////////////////////////////////////////////////////////////////////
+// DRIVE STATUS DATA
+bool driveStatus(void *){
+
+    DynamicJsonDocument doc(1024);
+    JsonObject status  = doc.to<JsonObject>();
+    JsonObject Brake = status.createNestedObject("Brake");
+    JsonObject Motor = status.createNestedObject("Motor");
+    JsonObject Limits = status.createNestedObject("Limits");
+    Brake["Active"] = brakeOn;
+    Brake["ABS"] = !manual_brake_disable;
+    Motor["Homed"] = isHomed;
+    Motor["CurrentPosition"] = getPosition();
+    Motor["CurrentVelocity"] = getVelocity();
+    Motor["FailedState"] = !motor.HlfbState();
+    Motor["Enabled"] = motor.EnableRequest();
+    Limits["UpperLimitReached"] = !digitalRead(upperEndstopPin);
+    Limits["LowerLimitReached"] = !digitalRead(lowerEndstopPin);
+    String output = "";
+    
+    // if (command == "bd"){
+    //   serializeJsonPretty(Brake,output);
+    // }
+
+   
+    // else if (command =="mtr"){
+    // serializeJsonPretty(Motor,output);
+    // }
+        
+   
+    // else if(command == "end"){
+    //   serializeJsonPretty(Limits,output);
+    // }
+        
+    serializeJson(status,output);
+    Serial.print(output);
+
+    return true;
+
+   
+   
+
+
+
+
 }
