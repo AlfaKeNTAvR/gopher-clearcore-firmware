@@ -20,7 +20,7 @@
         },
         {
             "name": "Arduino",
-            "compilerPath": "C:\\Users\\nbboguslavskii\\AppData\\Local\\Arduino15\\packages\\arduino\\tools\\arm-none-eabi-gcc\\7-2017q4\\bin\\arm-none-eabi-g++",
+            "compilerPath": "/home/samedi/.arduino15/packages/arduino/tools/arm-none-eabi-gcc/7-2017q4/bin/arm-none-eabi-g++",
             "compilerArgs": [
                 "-mthumb",
                 "-mcpu=cortex-m4",
@@ -38,30 +38,32 @@
             ],
             "intelliSenseMode": "gcc-x64",
             "includePath": [
-                "C:\\Users\\nbboguslavskii\\AppData\\Local\\Arduino15\\packages\\ClearCore\\hardware\\sam\\1.1.2\\cores\\arduino\\api",
-                "C:\\Users\\nbboguslavskii\\AppData\\Local\\Arduino15\\packages\\arduino\\tools\\CMSIS\\4.5.0\\CMSIS\\Include\\",
-                "C:\\Users\\nbboguslavskii\\AppData\\Local\\Arduino15\\packages\\ClearCore\\hardware\\sam\\1.1.2\\variants\\clearcore\\Third Party\\SAME53\\CMSIS\\Device\\Include",
-                "C:\\Users\\nbboguslavskii\\AppData\\Local\\Arduino15\\packages\\ClearCore\\hardware\\sam\\1.1.2\\Teknic\\libClearCore\\inc",
-                "C:\\Users\\nbboguslavskii\\AppData\\Local\\Arduino15\\packages\\ClearCore\\hardware\\sam\\1.1.2\\Teknic\\LwIP\\LwIP\\src\\include",
-                "C:\\Users\\nbboguslavskii\\AppData\\Local\\Arduino15\\packages\\ClearCore\\hardware\\sam\\1.1.2\\Teknic\\LwIP\\LwIP\\port\\include",
-                "C:\\Users\\nbboguslavskii\\AppData\\Local\\Arduino15\\packages\\ClearCore\\hardware\\sam\\1.1.2\\cores\\arduino",
-                "C:\\Users\\nbboguslavskii\\AppData\\Local\\Arduino15\\packages\\ClearCore\\hardware\\sam\\1.1.2\\variants\\clearcore",
-                "c:\\users\\nbboguslavskii\\appdata\\local\\arduino15\\packages\\arduino\\tools\\arm-none-eabi-gcc\\7-2017q4\\arm-none-eabi\\include\\c++\\7.2.1",
-                "c:\\users\\nbboguslavskii\\appdata\\local\\arduino15\\packages\\arduino\\tools\\arm-none-eabi-gcc\\7-2017q4\\arm-none-eabi\\include\\c++\\7.2.1\\arm-none-eabi",
-                "c:\\users\\nbboguslavskii\\appdata\\local\\arduino15\\packages\\arduino\\tools\\arm-none-eabi-gcc\\7-2017q4\\arm-none-eabi\\include\\c++\\7.2.1\\backward",
-                "c:\\users\\nbboguslavskii\\appdata\\local\\arduino15\\packages\\arduino\\tools\\arm-none-eabi-gcc\\7-2017q4\\lib\\gcc\\arm-none-eabi\\7.2.1\\include",
-                "c:\\users\\nbboguslavskii\\appdata\\local\\arduino15\\packages\\arduino\\tools\\arm-none-eabi-gcc\\7-2017q4\\lib\\gcc\\arm-none-eabi\\7.2.1\\include-fixed",
-                "c:\\users\\nbboguslavskii\\appdata\\local\\arduino15\\packages\\arduino\\tools\\arm-none-eabi-gcc\\7-2017q4\\arm-none-eabi\\include"
+                "/home/samedi/.arduino15/packages/ClearCore/hardware/sam/1.1.2/cores/arduino/api",
+                "/home/samedi/.arduino15/packages/arduino/tools/CMSIS/4.5.0/CMSIS/Include/",
+                "/home/samedi/.arduino15/packages/ClearCore/hardware/sam/1.1.2/variants/clearcore/Third Party/SAME53/CMSIS/Device/Include",
+                "/home/samedi/.arduino15/packages/ClearCore/hardware/sam/1.1.2/Teknic/libClearCore/inc",
+                "/home/samedi/.arduino15/packages/ClearCore/hardware/sam/1.1.2/Teknic/LwIP/LwIP/src/include",
+                "/home/samedi/.arduino15/packages/ClearCore/hardware/sam/1.1.2/Teknic/LwIP/LwIP/port/include",
+                "/home/samedi/.arduino15/packages/ClearCore/hardware/sam/1.1.2/cores/arduino",
+                "/home/samedi/.arduino15/packages/ClearCore/hardware/sam/1.1.2/variants/clearcore",
+                "/home/samedi/Arduino/libraries/ArduinoJson/src",
+                "/home/samedi/Arduino/libraries/arduino-timer/src",
+                "/home/samedi/.arduino15/packages/arduino/tools/arm-none-eabi-gcc/7-2017q4/arm-none-eabi/include/c++/7.2.1",
+                "/home/samedi/.arduino15/packages/arduino/tools/arm-none-eabi-gcc/7-2017q4/arm-none-eabi/include/c++/7.2.1/arm-none-eabi",
+                "/home/samedi/.arduino15/packages/arduino/tools/arm-none-eabi-gcc/7-2017q4/arm-none-eabi/include/c++/7.2.1/backward",
+                "/home/samedi/.arduino15/packages/arduino/tools/arm-none-eabi-gcc/7-2017q4/lib/gcc/arm-none-eabi/7.2.1/include",
+                "/home/samedi/.arduino15/packages/arduino/tools/arm-none-eabi-gcc/7-2017q4/lib/gcc/arm-none-eabi/7.2.1/include-fixed",
+                "/home/samedi/.arduino15/packages/arduino/tools/arm-none-eabi-gcc/7-2017q4/arm-none-eabi/include"
             ],
             "forcedInclude": [
-                "C:\\Users\\nbboguslavskii\\AppData\\Local\\Arduino15\\packages\\ClearCore\\hardware\\sam\\1.1.2\\cores\\arduino\\Arduino.h"
+                "/home/samedi/.arduino15/packages/ClearCore/hardware/sam/1.1.2/cores/arduino/Arduino.h"
             ],
             "cStandard": "c11",
             "cppStandard": "c++11",
             "defines": [
                 "F_CPU=120000000L",
                 "__FPU_PRESENT=1",
-                "ARDUINO=10814",
+                "ARDUINO=10819",
                 "ARDUINO_ARM_ClearCore",
                 "ARDUINO_ARCH_SAM",
                 "__ARM_FEATURE_DSP=1",

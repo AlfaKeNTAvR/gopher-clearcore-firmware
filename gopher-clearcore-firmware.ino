@@ -1,21 +1,36 @@
 #include "drive.h"
 #include <arduino-timer.h>
-// Select the baud rate to match the target serial device
-#define baudRate 115200
 
+// Select the baud rate to match the target serial device
+
+#define baudRate 115200
+#define adcResolution 12
 // Other variables
 auto timer = timer_create_default();
-
+// Potentiometer ShoulderL = Potentiometer(LeftShoulderPin,2046,4082);
+// bool printAngle(void *){
+//   Serial.print("Angle: ");
+//   Serial.println(ShoulderL.getAngle());
+//   Serial.print("ADCVal: ");
+//   Serial.println(ShoulderL.getAnalogValue());
+  
+  
+//   return true;
+// }
 void setup() 
 {
     attachInterrupt(digitalPinToInterrupt(lowerEndstopPin), lowerEndstopInterrupt, FALLING);
     attachInterrupt(digitalPinToInterrupt(upperEndstopPin), upperEndstopInterrupt, FALLING);
 
     interrupts();
+    AdcMgr.AdcResolution(adcResolution);
+    ConnectorA11.Mode(Connector::INPUT_ANALOG);
+
 
     // Put your setup code here, it will only run once:
     // Activate break
     pinMode(brakePin, OUTPUT);
+    
 
     // Sets up serial communication and waits up to 5 seconds for a port to open.
     // Serial communication is not required for this example to run.
@@ -28,8 +43,10 @@ void setup()
     }
 
     //brakeControl("on");
-    timer.every(10, driveStatus);
+    timer.every(100, driveStatus);
+    
     driveSetup();
+
 
 }
 
@@ -38,6 +55,7 @@ void loop()
   // Auto-enable brake after a movement
   moveCompleted();
   
+ 
   
 
   if(Serial.available() != 0)

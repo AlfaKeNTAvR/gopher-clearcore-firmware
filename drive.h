@@ -4,6 +4,7 @@
 #include "ClearCore.h"
 #define ARDUINOJSON_ENABLE_PROGMEM 0
 #include <ArduinoJson.h>
+#include "potentiometer.h"
 // Options are: ConnectorM0, ConnectorM1, ConnectorM2, or ConnectorM3.
 #define motor ConnectorM0
 
@@ -12,8 +13,10 @@
 // Specify which input pin to read from.
 // IO-0 through A-12 are all available as digital inputs.
 #define upperEndstopPin DI7
+
 #define lowerEndstopPin DI6
 #define brakePin IO5
+#define LeftShoulderPin A11
 
 // Define the velocity and acceleration limits to be used for each move
 const int velocityLimit = 100;          // mm per sec

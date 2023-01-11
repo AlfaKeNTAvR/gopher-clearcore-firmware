@@ -9,6 +9,8 @@ volatile bool brakeOn = false;
 uint32_t previousMillisCompleted = 0;
 uint32_t currentMillisCompleted = 0;
 uint32_t delayCompleted = 1000;
+Potentiometer ShoulderL = Potentiometer(LeftShoulderPin,3498,3998);
+Potentiometer ShoulderR = Potentiometer(LeftShoulderPin,3498,3998);
 
 
 ////////////////////////////////////////////////////////////////////////////
@@ -324,7 +326,7 @@ bool homing(double pos_after_homing)
   // Stop continous movement
   motor.MoveVelocity(0);
  
-  // Get below the limit switch
+
   moveRelativePosition(-7, 0.1, true, true);
 
   // Wait for the movement to complete
@@ -562,6 +564,7 @@ bool driveStatus(void *){
     JsonObject Brake = status.createNestedObject("Brake");
     JsonObject Motor = status.createNestedObject("Motor");
     JsonObject Limits = status.createNestedObject("Limits");
+    JsonObject Shoulders = status.createNestedObject("Shoulders");
     Brake["Active"] = brakeOn;
     Brake["ABS"] = !manual_brake_disable;
     Motor["Homed"] = isHomed;
@@ -571,24 +574,13 @@ bool driveStatus(void *){
     Motor["Enabled"] = motor.EnableRequest();
     Limits["UpperLimitReached"] = !digitalRead(upperEndstopPin);
     Limits["LowerLimitReached"] = !digitalRead(lowerEndstopPin);
+    Shoulders["LeftShoulder"] = ShoulderL.getAngle();
+    Shoulders["RightShoulder"] = ShoulderR.getAngle();
     String output = "";
     
-    // if (command == "bd"){
-    //   serializeJsonPretty(Brake,output);
-    // }
-
-   
-    // else if (command =="mtr"){
-    // serializeJsonPretty(Motor,output);
-    // }
-        
-   
-    // else if(command == "end"){
-    //   serializeJsonPretty(Limits,output);
-    // }
-        
+ 
     serializeJson(status,output);
-    Serial.print(output);
+    Serial.println(output);
 
     return true;
 
