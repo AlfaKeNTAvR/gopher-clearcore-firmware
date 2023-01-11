@@ -23,8 +23,8 @@ void setup()
     attachInterrupt(digitalPinToInterrupt(upperEndstopPin), upperEndstopInterrupt, FALLING);
 
     interrupts();
-    AdcMgr.AdcResolution(adcResolution);
-    ConnectorA11.Mode(Connector::INPUT_ANALOG);
+    // AdcMgr.AdcResolution(adcResolution);
+    // ConnectorA11.Mode(Connector::INPUT_ANALOG);
 
 
     // Put your setup code here, it will only run once:
