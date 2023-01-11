@@ -6,6 +6,8 @@ Potentiometer::Potentiometer(ClearCorePins pin,float min, float max){
    
 
 }
+////////////////////////////////////////////////////////////////////////////
+// Calculates the Angle based on analog value of potentiometer
 float Potentiometer::getAngle(){
     int analog_value = 0;
     float percent = 0;
@@ -33,6 +35,8 @@ float Potentiometer::getAngle(){
     return final_angle;
 
 }
+////////////////////////////////////////////////////////////////////////////
+// Returns Analog output of potentiomenter
 int Potentiometer::getAnalogValue(){
     int analog_value = analogRead(pin);
    
