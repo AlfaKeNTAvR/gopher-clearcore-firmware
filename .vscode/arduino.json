@@ -1,6 +1,6 @@
 {
     "board": "ClearCore:sam:clearcore",
-    "port": "/dev/ttyACM0",
+    "port": "COM3",
     "programmer": "arduino:avrisp",
-    "sketch": "gopher_clearcore.ino"
+    "sketch": "gopher-clearcore-firmware.ino"
 }

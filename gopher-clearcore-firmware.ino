@@ -9,11 +9,12 @@ auto logger_timer = timer_create_default();
 auto flush_timer = timer_create_default();
 bool logger = false;
 
-bool serial_flush(void *)
-{
-  Serial.flush();
-  return true;
-}
+// bool serial_flush(void *)
+// {
+//   Serial.flush();
+//   Serial.begin(baudRate);
+//   return true;
+// }
 
 void setup() 
 {
@@ -38,7 +39,8 @@ void setup()
 
     driveSetup();
 
-    flush_timer.every(1000, serial_flush);
+    // Clear the buffer each 1000ms
+    // flush_timer.every(1000, serial_flush);
 }
 
 void loop() 
@@ -46,7 +48,7 @@ void loop()
   // Auto-enable brake after a movement
   moveCompleted();
 
-  flush_timer.tick();
+  // flush_timer.tick();
   
   if(logger == true)
   {
