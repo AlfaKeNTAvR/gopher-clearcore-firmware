@@ -360,7 +360,7 @@ bool homing(double pos_after_homing)
   // Wait for the movement to complete
   motionWait();
 
-  // Set current position to 550
+  // Set current position to 440
   motor.PositionRefSet(unitConverter(pos_after_homing, "mm_to_steps"));
   
   if(debug) Serial.println("Homed!");
