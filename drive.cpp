@@ -58,28 +58,28 @@ bool safetyCheck(bool ignore_ishomed)
   // Check 1: the motor is not in fail state
   if(motor.HlfbState() == 0)
   {
-    Serial.println("Error: Motor is in a fail state! Reapply power to the motor.");
+    if(debug) Serial.println("Error: Motor is in a fail state! Reapply power to the motor.");
     return false;
   }
 
   // Check 2: the motor is enabled
   if(!motor.EnableRequest())
   {
-    Serial.println("Error: Motor is not enabled!");
+    if(debug) Serial.println("Error: Motor is not enabled!");
     return false;
   }
 
   // Check 3: the motor is homed
   if(!isHomed && !ignore_ishomed && !debug)
   {
-    Serial.println("Error: Not homed!");
+    if(debug) Serial.println("Error: Not homed!");
     return false;
   }
 
   // Check 4: the brake is not turned-off manually
   if(manual_brake_disable)
   {
-    Serial.println("Error: brake is turned-off manually!");
+    if(debug) Serial.println("Error: brake is turned-off manually!");
     return false;
   }
 
@@ -124,7 +124,7 @@ bool driveSetup()
   drivePower("on", true);
 
   // Waits for HLFB to assert (waits for homing to complete if applicable)
-  Serial.println("Waiting for HLFB...");
+  if(debug) Serial.println("Waiting for HLFB...");
 
   uint32_t timeout = 10000;
   uint32_t startTime = millis();
@@ -135,12 +135,12 @@ bool driveSetup()
       // Check for timeout
       if(millis() - startTime >= timeout)
       {
-        Serial.println("Motor setup failure!");
+        if(debug) Serial.println("Motor setup failure!");
         return false;
       }
   }
 
-  Serial.println("Motor Ready");
+  if(debug) Serial.println("Motor Ready");
   return true;
 }
 
@@ -196,7 +196,7 @@ bool drivePower(String state, bool ignore_hlfb)
     // Check if the motor was actually enabled
     if(!motor.EnableRequest())
     {
-      Serial.println("Error: Motor is NOT enabled");
+      if(debug) Serial.println("Error: Motor is NOT enabled");
       return false;
     }
     
@@ -215,7 +215,7 @@ bool drivePower(String state, bool ignore_hlfb)
     // Check if the motor was actually enabled
     if(motor.EnableRequest())
     {
-      Serial.println("Error: Drive is STILL enabled");
+      if(debug) Serial.println("Error: Drive is STILL enabled");
       return false;
     }
   
@@ -225,7 +225,7 @@ bool drivePower(String state, bool ignore_hlfb)
   // Check if the motor is not in fail state (ignore on start up - motor take time to energize its coils)
   if(motor.HlfbState() == 0 && !ignore_hlfb)
   {
-    Serial.println("Error: Motor is in a fail state! Reapply power to the motor.");
+    if(debug) Serial.println("Error: Motor is in a fail state! Reapply power to the motor.");
     return false;
   }
   
@@ -315,7 +315,7 @@ bool homing(double pos_after_homing)
     if(current_millis - previous_millis >= rapid_delay)
     {
       motor.MoveVelocity(0);
-      Serial.println("Error: Rapid homing timeout!");
+      if(debug) Serial.println("Error: Rapid homing timeout!");
 
       return false;
     }
@@ -345,7 +345,7 @@ bool homing(double pos_after_homing)
     if(current_millis - previous_millis >= slow_delay)
     {
       motor.MoveVelocity(0);
-      Serial.println("Error: Precise homing timeout!");
+      if(debug) Serial.println("Error: Precise homing timeout!");
       
       return false;
     }
@@ -360,10 +360,10 @@ bool homing(double pos_after_homing)
   // Wait for the movement to complete
   motionWait();
 
-  // Set current position to 550
+  // Set current position to 440
   motor.PositionRefSet(unitConverter(pos_after_homing, "mm_to_steps"));
   
-  Serial.println("Homed...");
+  if(debug) Serial.println("Homed!");
 
   // Set flag
   isHomed = true;
@@ -395,7 +395,7 @@ bool moveAbsolutePosition(int position, double vel_frac, bool ignore_limits, boo
   {
     if(position > positionUpperLimit || position < positionLowerLimit)
     {
-      Serial.println("Error: Out of boundaries!");
+      if(debug) Serial.println("Error: Out of boundaries!");
       return false;
     }
   }
@@ -436,7 +436,7 @@ bool moveRelativePosition(int position, double vel_frac, bool ignore_limits, boo
 
     if(current_position + position > positionUpperLimit || current_position + position < positionLowerLimit)
     {
-      Serial.println("Error: Out of boundaries!");
+      if(debug) Serial.println("Error: Out of boundaries!");
       return false;
     }
   }
@@ -468,18 +468,14 @@ bool moveAtVelocity(double vel_frac, bool ignore_limits, bool ignore_ishomed)
   if(safetyCheck(ignore_ishomed) == false) return false;
 
   // Check 5: velocity fraction is not greater than 1.0 + additional reduction to 50%
-  //vel_frac = CorrectVelocityFraction(vel_frac) * 0.5; 
-
-  // Serial.print("Current position is ");
-  // Serial.print(getPosition());
-  // Serial.println(" mm");
+  //vel_frac = CorrectVelocityFraction(vel_frac) * 0.5; git 
 
   // Check 6: soft limits will not be exceeded
   if(!ignore_limits && !debug)
   {
     if((getPosition() - positionLowerLimit <= 5 && vel_frac < 0) || (positionUpperLimit - getPosition() <= 5 && vel_frac > 0))
     {
-      Serial.println("Error: Out of boundaries!");
+      if(debug) Serial.println("Error: Out of boundaries!");
       return false;
     }
   }
@@ -553,49 +549,30 @@ void upperEndstopInterrupt()
     }
   }
 }
+
 ////////////////////////////////////////////////////////////////////////////
 // DRIVE STATUS DATA
-bool driveStatus(void *){
+bool driveStatus(void *)
+{
+  DynamicJsonDocument doc(1024);
+  JsonObject status  = doc.to<JsonObject>();
+  JsonObject Brake = status.createNestedObject("Brake");
+  JsonObject Motor = status.createNestedObject("Motor");
+  JsonObject Limits = status.createNestedObject("Limits");
+  
+  Brake["Active"] = brakeOn;
+  Brake["ABS"] = !manual_brake_disable;
+  Motor["Homed"] = isHomed;
+  Motor["CurrentPosition"] = getPosition();
+  Motor["CurrentVelocity"] = getVelocity();
+  Motor["FailedState"] = !motor.HlfbState();
+  Motor["Enabled"] = motor.EnableRequest();
+  Limits["UpperLimitReached"] = !digitalRead(upperEndstopPin);
+  Limits["LowerLimitReached"] = !digitalRead(lowerEndstopPin);
+  String output = "";
+      
+  serializeJson(status, output);
+  Serial.println("logger_" + output + "_");
 
-    DynamicJsonDocument doc(1024);
-    JsonObject status  = doc.to<JsonObject>();
-    JsonObject Brake = status.createNestedObject("Brake");
-    JsonObject Motor = status.createNestedObject("Motor");
-    JsonObject Limits = status.createNestedObject("Limits");
-    Brake["Active"] = brakeOn;
-    Brake["ABS"] = !manual_brake_disable;
-    Motor["Homed"] = isHomed;
-    Motor["CurrentPosition"] = getPosition();
-    Motor["CurrentVelocity"] = getVelocity();
-    Motor["FailedState"] = !motor.HlfbState();
-    Motor["Enabled"] = motor.EnableRequest();
-    Limits["UpperLimitReached"] = !digitalRead(upperEndstopPin);
-    Limits["LowerLimitReached"] = !digitalRead(lowerEndstopPin);
-    String output = "";
-    
-    // if (command == "bd"){
-    //   serializeJsonPretty(Brake,output);
-    // }
-
-   
-    // else if (command =="mtr"){
-    // serializeJsonPretty(Motor,output);
-    // }
-        
-   
-    // else if(command == "end"){
-    //   serializeJsonPretty(Limits,output);
-    // }
-        
-    serializeJson(status,output);
-    Serial.print(output);
-
-    return true;
-
-   
-   
-
-
-
-
+  return true;
 }

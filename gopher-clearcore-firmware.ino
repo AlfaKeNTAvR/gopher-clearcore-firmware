@@ -1,10 +1,20 @@
 #include "drive.h"
 #include <arduino-timer.h>
+
 // Select the baud rate to match the target serial device
 #define baudRate 115200
 
 // Other variables
-auto timer = timer_create_default();
+auto logger_timer = timer_create_default();
+auto flush_timer = timer_create_default();
+bool logger = false;
+
+bool serial_flush(void *)
+{
+  Serial.flush();
+  // Serial.begin(baudRate);
+  return true;
+}
 
 void setup() 
 {
@@ -27,17 +37,23 @@ void setup()
         continue;
     }
 
-    //brakeControl("on");
-    timer.every(10, driveStatus);
     driveSetup();
 
+    // Clear the buffer each 1000ms
+    flush_timer.every(1000, serial_flush);
 }
 
 void loop() 
 {
   // Auto-enable brake after a movement
   moveCompleted();
+
+  flush_timer.tick();
   
+  if(logger == true)
+  {
+    logger_timer.tick();
+  }
   
 
   if(Serial.available() != 0)
@@ -128,8 +144,24 @@ void loop()
       Serial.print(getVelocity());
       Serial.println(" mm/s");
     }
-  }   
-  timer.tick(); // tick the timer
 
+    else if(command == "logger")
+    {
+      String sub_command = Serial.readStringUntil('_');
+
+      if(sub_command == "on")
+      {
+        logger = true;
   
+        // Period in ms
+        double freq = Serial.readStringUntil('_').toDouble();
+        logger_timer.every(freq, driveStatus);
+      }
+
+      else if(sub_command == "off")
+      {
+        logger = false;
+      }
+    }
+  }    
 }

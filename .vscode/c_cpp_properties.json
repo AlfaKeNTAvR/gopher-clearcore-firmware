@@ -46,6 +46,8 @@
                 "C:\\Users\\nbboguslavskii\\AppData\\Local\\Arduino15\\packages\\ClearCore\\hardware\\sam\\1.1.2\\Teknic\\LwIP\\LwIP\\port\\include",
                 "C:\\Users\\nbboguslavskii\\AppData\\Local\\Arduino15\\packages\\ClearCore\\hardware\\sam\\1.1.2\\cores\\arduino",
                 "C:\\Users\\nbboguslavskii\\AppData\\Local\\Arduino15\\packages\\ClearCore\\hardware\\sam\\1.1.2\\variants\\clearcore",
+                "C:\\Users\\nbboguslavskii\\Documents\\Arduino\\libraries\\ArduinoJson\\src",
+                "C:\\Users\\nbboguslavskii\\Documents\\Arduino\\libraries\\arduino-timer\\src",
                 "c:\\users\\nbboguslavskii\\appdata\\local\\arduino15\\packages\\arduino\\tools\\arm-none-eabi-gcc\\7-2017q4\\arm-none-eabi\\include\\c++\\7.2.1",
                 "c:\\users\\nbboguslavskii\\appdata\\local\\arduino15\\packages\\arduino\\tools\\arm-none-eabi-gcc\\7-2017q4\\arm-none-eabi\\include\\c++\\7.2.1\\arm-none-eabi",
                 "c:\\users\\nbboguslavskii\\appdata\\local\\arduino15\\packages\\arduino\\tools\\arm-none-eabi-gcc\\7-2017q4\\arm-none-eabi\\include\\c++\\7.2.1\\backward",
@@ -61,7 +63,7 @@
             "defines": [
                 "F_CPU=120000000L",
                 "__FPU_PRESENT=1",
-                "ARDUINO=10814",
+                "ARDUINO=10607",
                 "ARDUINO_ARM_ClearCore",
                 "ARDUINO_ARCH_SAM",
                 "__ARM_FEATURE_DSP=1",
