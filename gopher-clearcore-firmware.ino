@@ -154,8 +154,9 @@ void loop()
         logger = true;
   
         // Period in ms
-        double freq = Serial.readStringUntil('_').toDouble();
-        logger_timer.every(freq, driveStatus);
+        double period = Serial.readStringUntil('_').toDouble();
+        logger_timer.cancel();
+        logger_timer.every(period, driveStatus);
       }
 
       else if(sub_command == "off")
