@@ -159,6 +159,7 @@ void brakeControl(String state, bool manual)
 
     digitalWrite(brakePin, LOW);  
     delay(50); // To ensure the brake is ON
+    brakeOn = true;
 
     if(debug) Serial.println("Brake Enabled");
   }
@@ -170,6 +171,7 @@ void brakeControl(String state, bool manual)
 
     digitalWrite(brakePin, HIGH);
     delay(50);  // To ensure the brake is OFF
+    brakeOn = false;
 
     if(debug) Serial.println("Brake Disabled"); 
   }
@@ -281,7 +283,7 @@ double getVelocity()
 {
   return unitConverter(motor.VelocityRefCommanded(), "steps_to_mm");
 }
-
+ 
 
 ////////////////////////////////////////////////////////////////////////////
 // HOMING SEQUENCE
